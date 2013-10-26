@@ -59,7 +59,12 @@ public class TournaSim {
 	 */
 	private static Player[] initializePlayers() {
 		
-		
+		/**
+		 * This block of code is going to prompt the user for the number of control, midrange, awesometestdeck, and aggro 
+		 * decks and save the numbers in variables that will be used to initialize the tournament. Eventually I hope to convert
+		 * these variables to actual decks that are present in a given metagame so that people can create a metagame that 
+		 * simulates their real life environment. 
+		 */
 		System.out.println("enter your number of control decks");
 		Scanner input = new Scanner(System.in);
 		numControl = input.nextInt();
@@ -73,11 +78,13 @@ public class TournaSim {
 		input = new Scanner(System.in);
 		numAggro = input.nextInt();
 		
-		size = numAggro + numMidrange + numControl + numAwesometestdeck + 1;
+		size = numAggro + numMidrange + numControl + numAwesometestdeck + 1; //makes size of the tournament all of the initialized decks
+		//plus the tracked player's deck, which for now I have called Woody because it is my name. 
 		
-		Player[] a = new Player[size];
+		Player[] a = new Player[size];// an array of players equal to the size variable.
 		Random randomGenerator = new Random();
 		
+		//the following block just gets information about the individual player we are to track and puts it in the system.
 		System.out.println("enter the tracked player's deck");
 		input = new Scanner(System.in);
 		String playerDeck = input.next();
@@ -88,7 +95,11 @@ public class TournaSim {
 		int randomNum = randomGenerator.nextInt(size);
 		a[randomNum] = new Player(3, realPlayerDeck, playerName);
 		
-		
+		/**each of the following for loops initializes the number of that type of deck in the tournament.
+		 * We need to stick these in randomly because we don't jumble up the decks in between rounds right now, which should
+		 * probably be added at some point. Since we are just insertion sorting the decks after each round to ensure the right point
+		 * matchups, we need to randomize at the beginning to ensure the same types of decks don't always play each other.
+		 */
 		for (int i = 0; i < numControl; i++){
 			int random = randomGenerator.nextInt(size);
 			while (a[random] != null){
@@ -114,10 +125,16 @@ public class TournaSim {
 			a[random] = new Player(3, new Deck("aggro"), "PlayerwAggro");}
 		return a;
 	}
-	
-	public static void battleDecks(Deck d1, Deck d2, int index, Player[] pArray)// takes two decks, the array of players to modify,
-	// and the index at which to modify
-	
+	/**
+	 * 
+	 * @param d1 the first deck passed to be matched against d2
+	 * @param d2 the second deck passed, to be matched against d1
+	 * @param index the position of the first deck in the player array. We use this to give the winning deck 3 points.
+	 * If the first deck wins, we give index +3 points because that is the index we passed. If the second deck wins, we 
+	 * give index+1 the 3 points because that is the index of the second deck.
+	 * @param pArray the array of players that we are using to simulate the tournament.
+	 */
+	public static void battleDecks(Deck d1, Deck d2, int index, Player[] pArray)
 	{
 		
 		String matchup = d2.getDeckName(); // gets name of the second deck
@@ -130,6 +147,11 @@ public class TournaSim {
 	
 	
 	/**
+	 * Main is going to initialize the players array, state how many swiss rounds should be in the tournament, and 
+	 * then simulate that tournament 100000 times and average those results to get an accurate simulation of the tournament.
+	 * It will then store the occurences of top 8, top 16, etc. for the top player in an array and print them as win %.
+	 * At some level, this code is not quite working correctly, as the win % predictions come out funky sometimes while looking
+	 * somewhat accurate at other times.
 	 * @param args
 	 */
 	public static void main(String[] args) {
